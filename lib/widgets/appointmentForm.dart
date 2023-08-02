@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:realestate/widgets/text.dart';
 
 import '../data/globals.dart';
@@ -38,21 +39,29 @@ class _appointmentFormState extends State<appointmentForm> {
 
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: kWhite.withOpacity(0.6),
       content: Container(
-        height: h,
-        width: w * 0.8,
+        height: h * 0.6,
+        width: w,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          // color: kWhite.withOpacity(0.2),
+          color: kWhite,
           borderRadius: BorderRadius.circular(15),
         ),
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(
             children: [
+
+              SizedBox(height: h * 0.02,),
+
+              Lottie.network("https://lottie.host/5558b0a1-eb58-430f-9908-9776e257eafc/Yr5tx4eZ61.json",width: w * 0.5),
+
+              textWidget(msg: "Patient Information", txtColor: kDarkBlue3, txtFontWeight: FontWeight.bold, txtFontSize: h * 0.025),
+
+              SizedBox(height: h * 0.02,),
+
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.only(top: 10),
                 child: TextField(
                   controller: Pname,
                   textCapitalization: TextCapitalization.words,
@@ -91,7 +100,7 @@ class _appointmentFormState extends State<appointmentForm> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.only(top: 10),
                 child: TextField(
                   controller: Pemail,
                   onChanged: (value) {
@@ -129,7 +138,7 @@ class _appointmentFormState extends State<appointmentForm> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.only(top: 10),
                 child: TextField(
                   controller: PAge,
                   onChanged: (value) {
@@ -167,7 +176,7 @@ class _appointmentFormState extends State<appointmentForm> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.only(top: 10),
                 child: TextField(
                   controller: Pnumber,
                   onChanged: (value) {
@@ -205,7 +214,7 @@ class _appointmentFormState extends State<appointmentForm> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.only(top: 10),
                 child: TextField(
                   controller: PaltNumber,
                   onChanged: (value) {
@@ -243,7 +252,7 @@ class _appointmentFormState extends State<appointmentForm> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.only(top: 10),
                 child: TextField(
                   controller: Cname,
                   onChanged: (value) {
@@ -282,7 +291,7 @@ class _appointmentFormState extends State<appointmentForm> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.only(top: 10),
                 child: TextField(
                   controller: Cnumber,
                   onChanged: (value) {
