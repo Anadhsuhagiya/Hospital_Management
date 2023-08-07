@@ -1,33 +1,46 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:realestate/data/DoctorsLists.dart';
 import 'package:realestate/data/globals.dart';
-import 'package:realestate/data/haptic.dart';
+import 'package:realestate/widgets/DetailsOfDoctors.dart';
 import 'package:realestate/widgets/text.dart';
 
-import 'DoctorsDetails.dart';
+import '../data/DoctorsLists.dart';
+import '../data/haptic.dart';
+import '../widgets/appointmentForm.dart';
+import '../widgets/frostedGlass.dart';
 
-class TopDoctors extends StatefulWidget {
-  const TopDoctors({super.key});
+class DoctorsDetails extends StatefulWidget {
+
+  int index;
+
+  DoctorsDetails(this.index);
+
 
   @override
-  State<TopDoctors> createState() => _TopDoctorsState();
+  State<DoctorsDetails> createState() => _DoctorsDetailsState();
 }
 
-class _TopDoctorsState extends State<TopDoctors> {
-  var h, w;
+class _DoctorsDetailsState extends State<DoctorsDetails> {
+
+  var h , w;
 
   @override
   Widget build(BuildContext context) {
+
     h = MediaQuery.of(context).size.height;
     w = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: kHomeBG,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title: textWidget(msg: "${ListofDoctors.DoctorsLists[widget.index]['name']}", txtColor: kBlack, txtFontWeight: FontWeight.w700, txtFontSize: h * 0.022),
+      ),
       body: ListView.builder(
         physics: BouncingScrollPhysics(),
-        itemCount: ListofDoctors.DoctorsLists.length,
+        itemCount: ListofDoctors.DoctorsLists[widget.index]['doctors'].length,
         itemBuilder: (context, index) {
           return InkWell(
             splashColor: Colors.transparent,
@@ -35,13 +48,16 @@ class _TopDoctorsState extends State<TopDoctors> {
             onTap: () {
               lightImpact();
 
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return DoctorsDetails(index);
-              },));
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return FrostedGlass(widget: DetailsOfDoctors(widget.index, index));
+                },
+              );
 
             },
             child: Container(
-              height: h * 0.1,
+              height: h * 0.09,
               width: w * 0.9,
               margin: EdgeInsets.only(left: 15,right: 15,top: 10),
               decoration: BoxDecoration(
@@ -60,7 +76,7 @@ class _TopDoctorsState extends State<TopDoctors> {
                   Padding(
                     padding: const EdgeInsets.only(left: 30),
                     child: Image.asset(
-                      '${ListofDoctors.DoctorsLists[index]['img']}',
+                      '${ListofDoctors.DoctorsLists[widget.index]['doctors'][index]['imgIcon']}',
                       width: w * 0.1,
                     ),
                   ),
@@ -71,7 +87,7 @@ class _TopDoctorsState extends State<TopDoctors> {
                       width: w * 0.6,
                       child: Flexible(
                         child: Text(
-                          "${ListofDoctors.DoctorsLists[index]['name']}",
+                          "${ListofDoctors.DoctorsLists[widget.index]['doctors'][index]['name1']}",
                           overflow: TextOverflow.fade,
                           style: GoogleFonts.montserrat(
                               textStyle: TextStyle(

@@ -52,6 +52,9 @@ class _SettingsState extends State<Settings> {
             SizedBox(height: h * 0.018,),
 
             settingsContainer(Aicon: "images/privacy.png", Aname: "Privacy Policy"),
+            SizedBox(height: h * 0.018,),
+
+            settingsContainer(Aicon: "images/logout.png", Aname: "Log Out"),
             SizedBox(height: h * 0.018,)
           ],
         ),

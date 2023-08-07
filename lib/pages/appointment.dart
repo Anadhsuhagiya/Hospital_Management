@@ -80,7 +80,7 @@ class _appointmentState extends State<appointment> {
                         alignment: Alignment.center,
                         margin: EdgeInsets.only(left: 15, top: 10, bottom: 10),
                         decoration: BoxDecoration(
-                          color: kWhite.withOpacity(0.5),
+                          color: SelectDateIndex == index ? kDarkBlue3.withOpacity(0.2) : kWhite.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(20),
                           border: SelectDateIndex == index
                               ? Border.all(color: kDarkBlue3, width: 2)
@@ -157,7 +157,7 @@ class _appointmentState extends State<appointment> {
                         alignment: Alignment.center,
                         margin: EdgeInsets.only(left: 15, top: 10, bottom: 10),
                         decoration: BoxDecoration(
-                            color: kWhite.withOpacity(0.5),
+                            color: SelectTimeIndex == index ? kDarkBlue3.withOpacity(0.2) : kWhite.withOpacity(0.5),
                             borderRadius: BorderRadius.circular(14),
                             border: SelectTimeIndex == index
                                 ? Border.all(color: kDarkBlue3, width: 2)
@@ -226,7 +226,7 @@ class _appointmentState extends State<appointment> {
                                 margin: EdgeInsets.only(left: 15),
                                 padding: EdgeInsets.only(right: 10),
                                 decoration: BoxDecoration(
-                                    color: kWhite.withOpacity(0.5),
+                                    color: SelectDoctorIndex == index ? kDarkBlue3.withOpacity(0.2) : kWhite.withOpacity(0.5),
                                     borderRadius: BorderRadius.circular(14),
                                     border: SelectDoctorIndex == index
                                         ? Border.all(
