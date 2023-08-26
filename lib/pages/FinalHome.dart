@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:realestate/pages/Doctors.dart';
+import 'package:realestate/pages/Drawer/Settings.dart';
+import 'package:realestate/pages/appointment.dart';
 import 'package:realestate/pages/searchPage.dart';
 
 import '../data/Lists.dart';
@@ -137,7 +140,7 @@ class _FinalHomeState extends State<FinalHome> {
                   children: [
 
                     Container(
-                      height: h * 0.76,
+                      height: h * 0.60,
                       width: w,
                       margin: EdgeInsets.only(top: h * 0.02),
                       decoration: BoxDecoration(
@@ -149,9 +152,7 @@ class _FinalHomeState extends State<FinalHome> {
                                 spreadRadius: -20,
                                 blurRadius: 20)
                           ],
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(40),
-                              topLeft: Radius.circular(40))),
+                          borderRadius: BorderRadius.circular(40)),
                       child: Column(
                         children: [
                           SizedBox(
@@ -324,204 +325,115 @@ class _FinalHomeState extends State<FinalHome> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Container(
-                                height: h * 0.13,
-                                width: h * 0.13,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: kHomeBG,
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: kBlack,
-                                          offset: Offset(2, 4),
-                                          spreadRadius: -17,
-                                          blurRadius: 20)
-                                    ]),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'images/doctor1.png',
-                                      width: w * 0.14,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: textWidget(
-                                          msg: "Doctors",
-                                          txtColor: kBlack,
-                                          txtFontWeight: FontWeight.w600,
-                                          txtFontSize: h * 0.02),
-                                    ),
-                                  ],
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(context, FadeRoute1(TopDoctors()));
+                                },
+                                child: Container(
+                                  height: h * 0.13,
+                                  width: h * 0.13,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: kHomeBG,
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: kBlack,
+                                            offset: Offset(2, 4),
+                                            spreadRadius: -17,
+                                            blurRadius: 20)
+                                      ]),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'images/doctor1.png',
+                                        width: w * 0.14,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(5),
+                                        child: textWidget(
+                                            msg: "Doctors",
+                                            txtColor: kBlack,
+                                            txtFontWeight: FontWeight.w600,
+                                            txtFontSize: h * 0.02),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              Container(
-                                height: h * 0.13,
-                                width: h * 0.13,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Color(0xffc4edc5),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: kBlack,
-                                          offset: Offset(2, 4),
-                                          spreadRadius: -17,
-                                          blurRadius: 20)
-                                    ]),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'images/pills.png',
-                                      width: w * 0.14,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: textWidget(
-                                          msg: "Medicines",
-                                          txtColor: kBlack,
-                                          txtFontWeight: FontWeight.w600,
-                                          txtFontSize: h * 0.02),
-                                    ),
-                                  ],
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(context, FadeRoute1(appointment()));
+                                },
+                                child: Container(
+                                  height: h * 0.13,
+                                  width: h * 0.13,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xffece3bf),
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: kBlack,
+                                            offset: Offset(2, 4),
+                                            spreadRadius: -17,
+                                            blurRadius: 20)
+                                      ]),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'images/appointment.png',
+                                        width: w * 0.14,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(5),
+                                        child: textWidget(
+                                            msg: "Appointment",
+                                            txtColor: kBlack,
+                                            txtFontWeight: FontWeight.w600,
+                                            txtFontSize: h * 0.015),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              Container(
-                                height: h * 0.13,
-                                width: h * 0.13,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Color(0xffece3bf),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: kBlack,
-                                          offset: Offset(2, 4),
-                                          spreadRadius: -17,
-                                          blurRadius: 20)
-                                    ]),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'images/appointment.png',
-                                      width: w * 0.14,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: textWidget(
-                                          msg: "Appointment",
-                                          txtColor: kBlack,
-                                          txtFontWeight: FontWeight.w600,
-                                          txtFontSize: h * 0.017),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: h * 0.015,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
-                                height: h * 0.13,
-                                width: h * 0.13,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Color(0xffece3bf),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: kBlack,
-                                          offset: Offset(2, 4),
-                                          spreadRadius: -17,
-                                          blurRadius: 20)
-                                    ]),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'images/heartdisease.png',
-                                      width: w * 0.14,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: textWidget(
-                                          msg: "Disease",
-                                          txtColor: kBlack,
-                                          txtFontWeight: FontWeight.w600,
-                                          txtFontSize: h * 0.02),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                height: h * 0.13,
-                                width: h * 0.13,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Color(0xffedc4c4),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: kBlack,
-                                          offset: Offset(2, 4),
-                                          spreadRadius: -17,
-                                          blurRadius: 20)
-                                    ]),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'images/hospital.png',
-                                      width: w * 0.14,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: textWidget(
-                                          msg: "Hospitals",
-                                          txtColor: kBlack,
-                                          txtFontWeight: FontWeight.w600,
-                                          txtFontSize: h * 0.02),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                height: h * 0.13,
-                                width: h * 0.13,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Color(0xffbfecdf),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: kBlack,
-                                          offset: Offset(2, 4),
-                                          spreadRadius: -17,
-                                          blurRadius: 20)
-                                    ]),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'images/support.png',
-                                      width: w * 0.14,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: textWidget(
-                                          msg: "Help Desk",
-                                          txtColor: kBlack,
-                                          txtFontWeight: FontWeight.w600,
-                                          txtFontSize: h * 0.017),
-                                    ),
-                                  ],
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(context, FadeRoute1(Settings()));
+                                },
+                                child: Container(
+                                  height: h * 0.13,
+                                  width: h * 0.13,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xffbfecdf),
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: kBlack,
+                                            offset: Offset(2, 4),
+                                            spreadRadius: -17,
+                                            blurRadius: 20)
+                                      ]),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'images/support.png',
+                                        width: w * 0.14,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(5),
+                                        child: textWidget(
+                                            msg: "Help Desk",
+                                            txtColor: kBlack,
+                                            txtFontWeight: FontWeight.w600,
+                                            txtFontSize: h * 0.017),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],

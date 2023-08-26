@@ -32,6 +32,12 @@ class _appointmentFormState extends State<appointmentForm> {
   bool PnumberError = false;
   bool PaltNumberError = false;
 
+  String male = "Male";
+  String female = "Female";
+  String other = "Other";
+
+  String Gender = "Gender";
+
   @override
   Widget build(BuildContext context) {
     h = MediaQuery.of(context).size.height;
@@ -326,6 +332,65 @@ class _appointmentFormState extends State<appointmentForm> {
                       errorText: CnumberError ? "Please Enter Companion Contact" : null
                   ),
                 ),
+              ),
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: h * 0.02,),
+                        textWidget(msg: "Gender :", txtColor: kBlack, txtFontWeight: FontWeight.w600, txtFontSize: h * 0.023),
+
+                      ],
+                    ),
+                  SizedBox(width: w * 0.04,),
+                  Column(
+crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Radio(
+                            activeColor: kDarkBlue3,
+                            value: male, groupValue: Gender, onChanged: (value) {
+                            Gender = value!;
+                            setState(() {
+
+                            });
+                          },),
+                          textWidget(msg: "Male", txtColor: kBlack, txtFontWeight: FontWeight.w500, txtFontSize: h * 0.018),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            activeColor: kDarkBlue3,
+                            value: female, groupValue: Gender, onChanged: (value) {
+                            Gender = value!;
+                            setState(() {
+
+                            });
+                          },),
+                          textWidget(msg: "Female", txtColor: kBlack, txtFontWeight: FontWeight.w500, txtFontSize: h * 0.018),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            activeColor: kDarkBlue3,
+                            value: other, groupValue: Gender, onChanged: (value) {
+                            Gender = value!;
+                            setState(() {
+
+                            });
+                          },),
+                          textWidget(msg: "Other", txtColor: kBlack, txtFontWeight: FontWeight.w500, txtFontSize: h * 0.018),
+                        ],
+                      )
+                    ],
+                  )
+                ],
               ),
 
               SizedBox(height: h * 0.02,),
