@@ -4,6 +4,7 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:realestate/data/DoctorsLists.dart';
 import 'package:realestate/data/globals.dart';
 import 'package:realestate/data/pageTransitions.dart';
+import 'package:realestate/pages/Drawer/drawerScreen.dart';
 import 'package:realestate/pages/appointment.dart';
 import 'package:realestate/widgets/text.dart';
 
@@ -75,7 +76,7 @@ class _DetailsOfDoctorsState extends State<DetailsOfDoctors> {
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   onTap: () {
-                    Navigator.push(context, FadeRoute1(appointment()));
+                    Navigator.push(context, FadeRoute1(drawerScreen(1)));
                   },
                   child: Container(
                     height: h * 0.06,

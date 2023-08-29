@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:realestate/data/Model.dart';
+import 'package:realestate/data/pageTransitions.dart';
 import 'package:realestate/pages/Drawer/drawerScreen.dart';
 import 'package:realestate/pages/onBoardUi.dart';
+import 'package:realestate/pages/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Home.dart';
@@ -36,20 +38,15 @@ class _splashState extends State<splash> {
     int status = Model.prefs!.getInt('signIN') ?? 0;
 
 
-    if(status == 1)
+    if(status == 2)
     {
-      Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) {
-          return drawerScreen();
-        },
-      ));
+      Navigator.pushReplacement(context, FadeRoute1(drawerScreen(2)));
+    }
+    else if(status == 1){
+      Navigator.pushReplacement(context, FadeRoute1(Profile()));
     }
     else{
-      Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) {
-          return onBoardUI();
-        },
-      ));
+      Navigator.pushReplacement(context, FadeRoute1(onBoardUI()));
     }
   }
 

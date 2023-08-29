@@ -1,13 +1,29 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:realestate/data/pageTransitions.dart';
+import 'package:realestate/pages/Drawer/drawerScreen.dart';
+import 'package:realestate/pages/profileShow.dart';
 import 'package:realestate/widgets/text.dart';
 
+import '../data/Model.dart';
 import '../data/globals.dart';
+import 'package:http/http.dart' as http;
+
+import 'frostedGlass.dart';
 
 class appointmentForm extends StatefulWidget {
-  const appointmentForm({super.key});
+
+  String appoDate;
+  String appoTime;
+  String appoDoctor;
+  String reason;
+
+  appointmentForm(this.appoDate, this.appoTime, this.appoDoctor, this.reason);
+
 
   @override
   State<appointmentForm> createState() => _appointmentFormState();
@@ -37,6 +53,16 @@ class _appointmentFormState extends State<appointmentForm> {
   String other = "Other";
 
   String Gender = "Gender";
+
+  String? UID;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    UID = Model.prefs!.getString('id') ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -396,7 +422,7 @@ crossAxisAlignment: CrossAxisAlignment.start,
               SizedBox(height: h * 0.02,),
 
               InkWell(
-                onTap: () {
+                onTap: () async {
                   String PNAME = Pname.text.trim();
                   String PEMAIL = Pemail.text.trim();
                   String PAGE = PAge.text.trim();
@@ -447,9 +473,7 @@ crossAxisAlignment: CrossAxisAlignment.start,
 
                     });
                   }
-
-                  else{
-                    Navigator.pop(context);
+                  else if(Gender.isEmpty){
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         shape: RoundedRectangleBorder(
@@ -458,17 +482,124 @@ crossAxisAlignment: CrossAxisAlignment.start,
                         behavior: SnackBarBehavior.floating,
                         content: Center(
                           child: Text(
-                            'Your Appointment is Booked',
+                            'Choose Your Gender',
                             style: GoogleFonts.montserrat(
                                 textStyle: TextStyle(
                                     color: kWhite,
                                     fontWeight: FontWeight.bold)),
                           ),
                         ),
-                        backgroundColor: kGreen,
+                        backgroundColor: kError,
                         duration: Duration(seconds: 2),
                       ),
                     );
+                  }
+
+                  else{
+
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return FrostedGlass(
+                            widget: AlertDialog(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              backgroundColor: kWhite.withOpacity(0.6),
+                              content: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(height: h * 0.05,width: h * 0.05,child: CircularProgressIndicator(color: kDarkBlue3,strokeWidth: 5,)),
+                                    SizedBox(width: w * 0.1,),
+                                    textWidget(msg: "Please Wait", txtColor: kDarkBlue3, txtFontWeight: FontWeight.w600, txtFontSize: h * 0.02)
+                                  ],
+                                ),
+                              ),
+                            )
+                        );
+                      },
+                    );
+
+                    var link = Uri.parse("https://flutteranadh.000webhostapp.com/Hospital/appointment.php");
+
+                    Map m = {
+                      'appoDate': widget.appoDate,
+                      'appoTime': widget.appoTime,
+                      'appoDoctor': widget.appoDoctor,
+                      'reason': widget.reason,
+                      'pname': PNAME,
+                      'pemail': PEMAIL,
+                      'page': PAGE,
+                      'cname': CNAME,
+                      'cnumber': CNUMBER,
+                      'pnumber': PNUMBER,
+                      'paltnumber': PALTNUMBER,
+                      'gender': Gender,
+                      'uid': UID
+                    };
+
+                    print("URL");
+                    var response = await http.post(link, body: m);
+
+                    Navigator.pop(context);
+                    print("Response");
+
+                    if (response.statusCode == 200) {
+                      print("response : ${response.body}");
+                      Map map = jsonDecode(response.body);
+
+                      int result = map['result'];
+                      print("result :- $result");
+                      if (result == 1) {
+
+
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            width: w * 0.9,
+                            behavior: SnackBarBehavior.floating,
+                            content: Center(
+                              child: Text(
+                                'Your Appointment is Booked',
+                                style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: kWhite,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                            backgroundColor: kGreen,
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+
+                        Navigator.pushReplacement(context, FadeRoute1(profileShow()));
+                      }
+                      else if(result == 0){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            width: w * 0.9,
+                            behavior: SnackBarBehavior.floating,
+                            content: Text(
+                              'System Error',
+                              style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: kWhite,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                            backgroundColor: kError,
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+                      }
+                    }
+
                   }
                 },
                 child: Container(

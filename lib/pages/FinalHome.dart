@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:realestate/data/Model.dart';
 import 'package:realestate/pages/Doctors.dart';
-import 'package:realestate/pages/Drawer/Settings.dart';
+import 'package:realestate/pages/Drawer/drawerScreen.dart';
+import 'package:realestate/pages/Home.dart';
+import 'package:realestate/pages/Settings.dart';
 import 'package:realestate/pages/appointment.dart';
 import 'package:realestate/pages/searchPage.dart';
 
@@ -14,6 +18,7 @@ import '../widgets/frostedGlass.dart';
 import '../widgets/infoCard.dart';
 import '../widgets/text.dart';
 import 'TopDoctors.dart';
+import 'package:http/http.dart' as http;
 
 class FinalHome extends StatefulWidget {
   const FinalHome({super.key});
@@ -26,6 +31,34 @@ class _FinalHomeState extends State<FinalHome> {
 
   var h , w;
   TextEditingController Search = TextEditingController();
+
+  String ID = "";
+  String IMAGE = "";
+  String NAME = "";
+  String EMAIL = "";
+  String MONO = "";
+  String PASSWORD = "";
+  String BDATE = "";
+  String GENDER = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Anadh();
+  }
+
+  Anadh() async {
+    ID = Model.prefs!.getString('id') ?? "";
+    IMAGE = Model.prefs!.getString('Image') ?? "";
+    NAME = Model.prefs!.getString('Name') ?? "";
+    EMAIL = Model.prefs!.getString('Email') ?? "";
+    MONO = Model.prefs!.getString('Mono') ?? "";
+    PASSWORD = Model.prefs!.getString('Password') ?? "";
+    BDATE = Model.prefs!.getString('Bdate') ?? "";
+    GENDER = Model.prefs!.getString('Gender') ?? "";
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +96,7 @@ class _FinalHomeState extends State<FinalHome> {
                         width: w * 0.05,
                       ),
                       textWidget(
-                          msg: "Anadh Suhagiya",
+                          msg: "$NAME",
                           txtColor: kBlack,
                           txtFontWeight: FontWeight.bold,
                           txtFontSize: h * 0.03)
@@ -112,7 +145,7 @@ class _FinalHomeState extends State<FinalHome> {
                                     fontSize: h * 0.018)),
                             onTap: () {
 
-                              Navigator.push(context, FadeRoute1(searchPage()));
+                              Navigator.push(context, FadeRoute1(drawerScreen(0)));
                               
                             },
                             onTapOutside: (event) =>
@@ -161,7 +194,7 @@ class _FinalHomeState extends State<FinalHome> {
                           InkWell(
                             onTap: () {
                               Navigator.push(
-                                  context, SlideTransition1(topDoctors()));
+                                  context, FadeRoute1(topDoctors()));
                             },
                             child: Row(
                               mainAxisAlignment:
@@ -327,7 +360,7 @@ class _FinalHomeState extends State<FinalHome> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(context, FadeRoute1(TopDoctors()));
+                                  Navigator.push(context, FadeRoute1(drawerScreen(3)));
                                 },
                                 child: Container(
                                   height: h * 0.13,
@@ -364,7 +397,7 @@ class _FinalHomeState extends State<FinalHome> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(context, FadeRoute1(appointment()));
+                                  Navigator.push(context, FadeRoute1(drawerScreen(1)));
                                 },
                                 child: Container(
                                   height: h * 0.13,
@@ -401,7 +434,7 @@ class _FinalHomeState extends State<FinalHome> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(context, FadeRoute1(Settings()));
+                                  Navigator.push(context, FadeRoute1(drawerScreen(4)));
                                 },
                                 child: Container(
                                   height: h * 0.13,

@@ -9,9 +9,13 @@ import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
 import '../data/globals.dart';
+import '../data/pageTransitions.dart';
+import '../widgets/frostedGlass.dart';
 import '../widgets/text.dart';
 import 'Register.dart';
 import 'login.dart';
+
+import 'package:http/http.dart' as http;
 
 class ForgotPass extends StatefulWidget {
   const ForgotPass({super.key});
@@ -428,7 +432,99 @@ class _ForgotPassState extends State<ForgotPass> {
                                                     String newPassss = newPass.text.trim();
                                                     String ConPassss = ConfirmPassWord.text.trim();
 
-                                                    Navigator.push(context, MaterialPageRoute(builder: (context) => login(),));
+                                                    showDialog(
+                                                      barrierDismissible: false,
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return FrostedGlass(
+                                                            widget: AlertDialog(
+                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                                              backgroundColor: kWhite.withOpacity(0.6),
+                                                              content: Container(
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(15),
+                                                                ),
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                  children: [
+                                                                    Container(height: h * 0.05,width: h * 0.05,child: CircularProgressIndicator(color: kDarkBlue3,strokeWidth: 5,)),
+                                                                    SizedBox(width: w * 0.1,),
+                                                                    textWidget(msg: "Please Wait", txtColor: kDarkBlue3, txtFontWeight: FontWeight.w600, txtFontSize: h * 0.02)
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            )
+                                                        );
+                                                      },
+                                                    );
+
+                                                    var link = Uri.parse("https://flutteranadh.000webhostapp.com/Hospital/forgot.php");
+
+                                                    Map m = {
+                                                      'email': email.text.trim(),
+                                                      'password': ConPassss,
+                                                    };
+
+                                                    print("URL");
+                                                    var response = await http.post(link, body: m);
+
+                                                    print("Response");
+                                                    Navigator.pop(context);
+
+                                                    Navigator.pop(context);
+
+                                                    if (response.statusCode == 200) {
+                                                      print("response : ${response.body}");
+                                                      Map map = jsonDecode(response.body);
+
+                                                      int result = map['result'];
+                                                      print("result :- $result");
+                                                      if (result == 1) {
+
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          SnackBar(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(12)),
+                                                            width: w * 0.9,
+                                                            behavior: SnackBarBehavior.floating,
+                                                            content: Center(
+                                                              child: Text(
+                                                                'Your Password has been Updated',
+                                                                style: GoogleFonts.montserrat(
+                                                                    textStyle: TextStyle(
+                                                                        color: kWhite,
+                                                                        fontWeight: FontWeight.bold)),
+                                                              ),
+                                                            ),
+                                                            backgroundColor: kGreen,
+                                                            duration: Duration(seconds: 2),
+                                                          ),
+                                                        );
+
+                                                        Navigator.pushReplacement(context, FadeRoute1(login()));
+                                                      }
+                                                      else if(result == 0){
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          SnackBar(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(12)),
+                                                            width: w * 0.9,
+                                                            behavior: SnackBarBehavior.floating,
+                                                            content: Text(
+                                                              'System Error',
+                                                              style: GoogleFonts.montserrat(
+                                                                  textStyle: TextStyle(
+                                                                      color: kWhite,
+                                                                      fontWeight: FontWeight.bold)),
+                                                            ),
+                                                            backgroundColor: kError,
+                                                            duration: Duration(seconds: 1),
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+
+
                                                   },
                                                   child:
                                                   Container(

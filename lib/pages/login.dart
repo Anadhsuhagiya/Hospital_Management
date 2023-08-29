@@ -1,10 +1,15 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:realestate/data/globals.dart';
+import 'package:realestate/data/pageTransitions.dart';
 import 'package:realestate/pages/Drawer/drawerScreen.dart';
 import 'package:realestate/pages/ForgotPassword.dart';
 import 'package:realestate/pages/Home.dart';
+import 'package:realestate/pages/profile.dart';
 import 'package:realestate/widgets/text.dart';
 import 'package:realestate/widgets/textField.dart';
 
@@ -208,6 +213,7 @@ class _loginState extends State<login> {
                             fontWeight: FontWeight.w500,
                           )),
                           cursorColor: kDarkBlue,
+                          obscureText: hidePass,
                           onChanged: (value) {
                             if(passwordError){
                               if(value.isNotEmpty){
@@ -323,6 +329,9 @@ class _loginState extends State<login> {
                         GestureDetector(
                           onTap: () async {
                             _click = true;
+                            setState(() {
+
+                            });
 
                             String USER = user.text.trim();
                             String PASSWORD = password.text.trim();
@@ -344,14 +353,97 @@ class _loginState extends State<login> {
                               });
                             }
                             else{
-                              await Model.prefs!.setInt('signIN', 1);
-                              Future.delayed(Duration(seconds: 1),(){
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => drawerScreen(),
-                                    ));
-                              });
+
+                              String api = 'https://flutteranadh.000webhostapp.com/Hospital/login.php?username=$USER&password=$PASSWORD';
+
+                              var response = await Dio().get(api);
+                              print("response :- $response");
+
+                              if(response.statusCode == 200){
+                                Map map = jsonDecode(response.data);
+
+                                int result = map['result'];
+                                print("result :- $result");
+
+                                if(result == 0)
+                                {
+                                  _click = false;
+                                  setState(() {
+
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12)),
+                                      width: w * 0.9,
+                                      behavior: SnackBarBehavior.floating,
+                                      content: Text(
+                                        'Check Your Details Again',
+                                        style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                                color: kWhite,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      backgroundColor: kError,
+                                      duration: Duration(seconds: 1),
+                                    ),
+                                  );
+                                }
+                                else
+                                {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12)),
+                                      width: w * 0.9,
+                                      behavior: SnackBarBehavior.floating,
+                                      content: Text(
+                                        'Login Successfully',
+                                        style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                                color: kWhite,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      backgroundColor: kGreen,
+                                      duration: Duration(seconds: 1),
+                                    ),
+                                  );
+
+
+                                  Map data = map['data'];
+
+                                  String id = "${data['id']}";
+                                  String image = "https://flutteranadh.000webhostapp.com/Hospital/${data['image']}";
+                                  String name = "${data['name']}";
+                                  String email = "${data['email']}";
+                                  String Mono = "${data['mono']}";
+                                  String password = "${data['password']}";
+                                  String bdate = "${data['bdate']}";
+                                  String gender = "${data['gender']}";
+                                  print(data);
+
+                                  await Model.prefs!.setString('id', id);
+                                  await Model.prefs!.setString('Image', image);
+                                  await Model.prefs!.setString('Name', name);
+                                  await Model.prefs!.setString('Email', email);
+                                  await Model.prefs!.setString('Mono', Mono);
+                                  await Model.prefs!.setString('Password', password);
+                                  await Model.prefs!.setString('Bdate', bdate);
+                                  await Model.prefs!.setString('Gender', gender);
+
+                                  if(image == "null" || name == "null" || bdate == "null" || gender == "null"){
+                                    await Model.prefs!.setInt('signIN', 1);
+                                    Navigator.pushReplacement(context, FadeRoute1(Profile()));
+                                  }
+                                  else{
+                                    await Model.prefs!.setInt('signIN', 2);
+                                    Navigator.pushReplacement(context, FadeRoute1(drawerScreen(2)));
+                                  }
+
+
+                                }
+                              }
+
                             }
 
 

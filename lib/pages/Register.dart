@@ -1,14 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:realestate/data/globals.dart';
+import 'package:realestate/data/pageTransitions.dart';
 import 'package:realestate/pages/login.dart';
 
 import '../data/Model.dart';
 import '../widgets/text.dart';
 import 'Drawer/drawerScreen.dart';
 import 'Home.dart';
+import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -401,7 +405,9 @@ class _RegisterState extends State<Register> {
                         InkWell(
                           onTap: () async {
                             _click = true;
+                            setState(() {
 
+                            });
                             String EMAIL = email.text.trim();
                             String MONO = mono.text.trim();
                             String PASSWORD = pass.text.trim();
@@ -450,13 +456,102 @@ class _RegisterState extends State<Register> {
                             }
                             else {
                               await Model.prefs!.setInt('signIN', 1);
-                              Future.delayed(Duration(seconds: 1), () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => drawerScreen(),
-                                    ));
-                              });
+
+
+                              var link = Uri.parse("https://flutteranadh.000webhostapp.com/Hospital/register.php");
+
+                              Map m = {
+                                'txtemail': EMAIL,
+                                'txtmono': MONO,
+                                'txtpassword': PASSWORD
+                              };
+
+                              print("URL");
+                              var response = await http.post(link, body: m);
+
+                              print("Response");
+
+                              if (response.statusCode == 200) {
+                                print("response : ${response.body}");
+                                Map map = jsonDecode(response.body);
+
+                                int result = map['result'];
+                                print("result :- $result");
+                                if (result == 1) {
+                                  _click = false;
+                                  setState(() {
+
+                                  });
+
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12)),
+                                      width: w * 0.9,
+                                      behavior: SnackBarBehavior.floating,
+                                      content: Text(
+                                        'Registered Successfully',
+                                        style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                                color: kWhite,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      backgroundColor: kGreen,
+                                      duration: Duration(seconds: 1),
+                                    ),
+                                  );
+                                  Navigator.pushReplacement(context, FadeRoute1(login()));
+                                }
+                                else if(result == 2){
+                                  _click = false;
+                                setState(() {
+
+                                });
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12)),
+                                      width: w * 0.9,
+                                      behavior: SnackBarBehavior.floating,
+                                      content: Text(
+                                        'Already have an Account',
+                                        style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                                color: kWhite,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      backgroundColor: kError,
+                                      duration: Duration(seconds: 1),
+                                    ),
+                                  );
+                                }
+                                else if(result == 0){
+                                  _click = false;
+                                  setState(() {
+
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12)),
+                                      width: w * 0.9,
+                                      behavior: SnackBarBehavior.floating,
+                                      content: Text(
+                                        'System Error',
+                                        style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                                color: kWhite,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      backgroundColor: kError,
+                                      duration: Duration(seconds: 1),
+                                    ),
+                                  );
+                                }
+                              }
+
                             }
 
                             setState(() {});

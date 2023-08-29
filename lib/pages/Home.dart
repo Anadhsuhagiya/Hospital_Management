@@ -18,11 +18,16 @@ import 'package:realestate/widgets/infoCard.dart';
 import 'package:realestate/widgets/text.dart';
 import 'package:unicons/unicons.dart';
 
+import '../data/Model.dart';
 import 'Settings.dart';
 import 'appointment.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+
+  int i;
+
+  Home(this.i);
+
 
   @override
   State<Home> createState() => _HomeState();
@@ -31,14 +36,27 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   var h, w;
 
-
-  /// Controller to handle PageView and also handles initial page
-  var _pageController = PageController(initialPage: 2);
-
-  /// Controller to handle bottom nav bar and also handles initial page
-  var _controller = NotchBottomBarController(index: 2);
+  var _pageController;
+  var _controller;
 
   int maxCount = 5;
+
+  String IMAGE = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    IMAGE = Model.prefs!.getString('Image') ?? "";
+    /// Controller to handle PageView and also handles initial page
+    _pageController = PageController(initialPage: widget.i);
+
+    /// Controller to handle bottom nav bar and also handles initial page
+    _controller = NotchBottomBarController(index: widget.i);
+    pageDirection = widget.i;
+  }
+
+  int? pageDirection;
 
   @override
   void dispose() {
@@ -66,17 +84,17 @@ class _HomeState extends State<Home> {
       backgroundColor: kHomeBG,
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
-        index: 2,
+        index: pageDirection!,
         height: h * 0.08,
         backgroundColor: Colors.transparent,
-        animationCurve: Curves.ease,
+        animationCurve: Curves.easeOut,
         buttonBackgroundColor: kWhite,
         items: <Widget>[
-            Image.asset(
-              'images/search.png',
-              width: w * 0.07,
-              color: Colors.blueGrey,
-            ),
+          Image.asset(
+            'images/search.png',
+            width: w * 0.07,
+            color: Colors.blueGrey,
+          ),
           Image.asset(
             'images/calendar.png',
             width: w * 0.07,
@@ -102,15 +120,16 @@ class _HomeState extends State<Home> {
           setState(() {
             log('current selected index $index');
 
+            pageDirection = index;
+
             _pageController.animateToPage(
-                      index,
-                      duration: Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    );
+              pageDirection,
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+            );
           });
         },
       ),
-
 
       // AnimatedNotchBottomBar(
       //   /// Provide NotchBottomBarController
@@ -194,7 +213,6 @@ class _HomeState extends State<Home> {
       //   },
       // ),
 
-
       // StylishBottomBar(
       //   backgroundColor: kWhite,
       //     elevation: 10,
@@ -256,14 +274,14 @@ class _HomeState extends State<Home> {
         //   decoration:
         //       BoxDecoration(gradient: LinearGradient(colors: AppbarGrad)),
         // ),
-        centerTitle: true,
-        leading: GestureDetector(
+        // centerTitle: true,
+        leading: InkWell(
           onTap: () {
-            if (ZoomDrawer.of(context)!.isOpen()) {
+            // if (ZoomDrawer.of(context)!.isOpen()) {
               ZoomDrawer.of(context)!.close();
-            } else {
-              ZoomDrawer.of(context)!.open();
-            }
+            // } else {
+            //   ZoomDrawer.of(context)!.open();
+            // }
           },
           child: Container(
               height: h * 0.03,
@@ -280,43 +298,74 @@ class _HomeState extends State<Home> {
                 textStyle: TextStyle(
                     fontSize: h * 0.025,
                     fontWeight: FontWeight.bold,
-                    color: kWhite))),
+                    color: kBlack))),
         actions: [
-          Container(
-            height: h * 0.01,
-            width: w * 0.12,
-            margin: EdgeInsets.only(right: 20, top: 5, bottom: 5),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(13),
-              color: kDarkBlue3,
-              boxShadow: [
-                BoxShadow(color: kBlack, spreadRadius: -12, blurRadius: 20)
-              ],
-            ),
-            child: Image.asset(
-              'images/man.png',
-              fit: BoxFit.cover,
+          InkWell(
+            onTap: () {
+
+              if(IMAGE != "null"){
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return FrostedGlass(
+                        widget: AlertDialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          backgroundColor: Colors.transparent,
+                          content: Container(
+                            height: h * 0.3,
+                            width: h * 0.4,
+                            decoration: BoxDecoration(
+                                color: kWhite,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(image: NetworkImage(IMAGE),fit: BoxFit.cover)
+                            ),
+                          ),
+                        )
+                    );
+                  },
+                );
+              }
+
+
+            },
+            child: Container(
+              height: h * 0.01,
+              width: w * 0.12,
+              margin: EdgeInsets.only(right: 20, top: 5, bottom: 5),
+              padding: IMAGE == "null" ? EdgeInsets.all(5) : EdgeInsets.all(0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(13),
+                color: kDarkBlue3,
+                boxShadow: [
+                  BoxShadow(color: kBlack, spreadRadius: -12, blurRadius: 20)
+                ],
+              ),
+              child: IMAGE == "null"
+                  ? Image.asset("images/man.png")
+                  : Container(
+                      height: h * 0.01,
+                      width: w * 0.12,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(IMAGE), fit: BoxFit.cover),
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                    ),
             ),
           )
         ],
       ),
       // extendBody: true,
-      body:
-
-      PageView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _pageController,
-        children: [
-
-          searchPage(),
-          appointment(),
-          FinalHome(),
-          TopDoctors(),
-          Settings(),
-
-        ]
-      ),
+      body: PageView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _pageController,
+          children: [
+            searchPage(),
+            appointment(),
+            FinalHome(),
+            TopDoctors(),
+            Settings(),
+          ]),
     );
   }
 }

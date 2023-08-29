@@ -9,7 +9,11 @@ import '../Home.dart';
 import 'MenuScreen.dart';
 
 class drawerScreen extends StatefulWidget {
-  const drawerScreen({Key? key}) : super(key: key);
+
+  int i;
+
+  drawerScreen(this.i);
+
 
   @override
   State<drawerScreen> createState() => _drawerScreenState();
@@ -28,12 +32,11 @@ class _drawerScreenState extends State<drawerScreen> {
     initData();
   }
 
-  initData() async {
-    Model.prefs = await SharedPreferences.getInstance();
+  initData() {
 
     NAME = Model.prefs!.getString('Name') ?? "";
     EMAIL = Model.prefs!.getString('Email') ?? "";
-    ImagePath = Model.prefs!.getString('ImagePath') ?? "";
+    ImagePath = Model.prefs!.getString('Image') ?? "";
     print("Name : $NAME");
     print("Email : $EMAIL");
     print("Image : $ImagePath");
@@ -47,7 +50,7 @@ class _drawerScreenState extends State<drawerScreen> {
     return ZoomDrawer(
       controller: zoomDrawerController,
       menuScreen: MenuScreen(ImagePath,NAME,EMAIL),
-      mainScreen: Home(),
+      mainScreen: Home(widget.i),
       showShadow: true,
       borderRadius: 30,
       style: DrawerStyle.defaultStyle,

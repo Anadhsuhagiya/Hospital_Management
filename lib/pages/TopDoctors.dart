@@ -57,7 +57,7 @@ class _topDoctorsState extends State<topDoctors> {
                 )
               ]
             ),
-            
+
             child: Row(
               children: [
                 SizedBox(width: w * 0.05,),
@@ -67,7 +67,7 @@ class _topDoctorsState extends State<topDoctors> {
                     Image.asset('${DoctorPics[index]}',width: w * 0.35,),
                   ],
                 ),
-                
+
                 SizedBox(width: w * 0.05,),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
