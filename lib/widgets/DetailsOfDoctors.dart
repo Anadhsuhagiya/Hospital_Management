@@ -4,6 +4,7 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:realestate/data/DoctorsLists.dart';
 import 'package:realestate/data/globals.dart';
 import 'package:realestate/data/pageTransitions.dart';
+import 'package:realestate/pages/DocAppointment.dart';
 import 'package:realestate/pages/Drawer/drawerScreen.dart';
 import 'package:realestate/pages/appointment.dart';
 import 'package:realestate/widgets/text.dart';
@@ -46,8 +47,8 @@ class _DetailsOfDoctorsState extends State<DetailsOfDoctors> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: kWhite,
+                    image: DecorationImage(image: AssetImage("${ListofDoctors.DoctorsLists[widget.Widindex]['doctors'][widget.index]['img1']}"),fit: BoxFit.cover)
                   ),
-                  child: Image.asset("${ListofDoctors.DoctorsLists[widget.Widindex]['doctors'][widget.index]['img1']}",fit: BoxFit.cover,),
                 ),
 
                 SizedBox(height: h * 0.02,),
@@ -55,10 +56,11 @@ class _DetailsOfDoctorsState extends State<DetailsOfDoctors> {
                 SizedBox(height: h * 0.018,),
                 textWidget(msg: "${ListofDoctors.DoctorsLists[widget.Widindex]['name']}", txtColor: kDarkBlue3, txtFontWeight: FontWeight.w600, txtFontSize: h * 0.017),
                 SizedBox(height: h * 0.018,),
+
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    textWidget(msg: "${ListofDoctors.DoctorsLists[widget.Widindex]['doctors'][widget.index]['degree']}", txtColor: kDarkBlue3, txtFontWeight: FontWeight.w500, txtFontSize: h * 0.015),
+                    textWidget(msg: "Languages : ", txtColor: kDarkBlue3, txtFontWeight: FontWeight.w500, txtFontSize: h * 0.018),
                     textWidget(msg: "${ListofDoctors.DoctorsLists[widget.Widindex]['doctors'][widget.index]['language']}", txtColor: kDarkBlue3, txtFontWeight: FontWeight.w500, txtFontSize: h * 0.015),
                   ],
                 ),
@@ -76,7 +78,7 @@ class _DetailsOfDoctorsState extends State<DetailsOfDoctors> {
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   onTap: () {
-                    Navigator.push(context, FadeRoute1(drawerScreen(1)));
+                    Navigator.push(context, FadeRoute1(DocAppointment(ListofDoctors.DoctorsLists[widget.Widindex]['doctors'][widget.index]['name1'] , ListofDoctors.DoctorsLists[widget.Widindex]['name'])));
                   },
                   child: Container(
                     height: h * 0.06,

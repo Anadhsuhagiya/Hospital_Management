@@ -4,7 +4,11 @@ import 'package:realestate/data/Lists.dart';
 import 'package:realestate/data/globals.dart';
 
 import '../data/pageTransitions.dart';
+import '../widgets/DetailsOfDoctors.dart';
+import '../widgets/frostedGlass.dart';
+import '../widgets/infoCard.dart';
 import '../widgets/text.dart';
+import 'Drawer/drawerScreen.dart';
 
 class searchPage extends StatefulWidget {
   const searchPage({super.key});
@@ -20,6 +24,7 @@ class _searchPageState extends State<searchPage> {
 
   bool searchResult = false;
 
+  List<String> SearchId = [];
   List<String> SearchNames = [];
   List<String> SearchImage = [];
   List<String> SearchPassion = [];
@@ -82,6 +87,7 @@ class _searchPageState extends State<searchPage> {
                               searchResult = true;
                               setState(() {});
 
+                              SearchId.clear();
                               SearchNames.clear();
                               SearchImage.clear();
                               SearchPassion.clear();
@@ -89,6 +95,7 @@ class _searchPageState extends State<searchPage> {
                               for(int i = 0; i < DoctorName.length; i++){
 
                                 if(DoctorName[i].toLowerCase().contains(value.trim().toLowerCase())){
+                                  SearchId.add("$i");
                                   SearchNames.add(DoctorName[i]);
                                   SearchImage.add(DoctorPics[i]);
                                   SearchPassion.add(DoctorSpeciality[i]);
@@ -126,17 +133,24 @@ class _searchPageState extends State<searchPage> {
                   physics: BouncingScrollPhysics(),
                   itemCount: SearchNames.length,
                   itemBuilder: (context, index) {
-                      return Card(
-                        color: kWhite,
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        margin: EdgeInsets.only(left: 20,top: 10,right: 20),
-                        child: ListTile(
-                          leading: Image.asset(SearchImage[index],width: w * 0.08,),
-                          title: textWidget(msg: SearchNames[index], txtColor: kDarkBlue3, txtFontWeight: FontWeight.w700, txtFontSize: h * 0.02),
-                          subtitle: textWidget(msg: SearchPassion[index], txtColor: kDarkBlue3, txtFontWeight: FontWeight.w400, txtFontSize: h * 0.016),
+                      return InkWell(
+                        onTap: () {
+                          showDialog(context: context, builder: (context) {
+                            return FrostedGlass(widget: InfoCard(int.parse(SearchId[index])));
+                          },);
+                        },
+                        child: Card(
+                          color: kWhite,
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          margin: EdgeInsets.only(left: 20,top: 10,right: 20),
+                          child: ListTile(
+                            leading: Image.asset(SearchImage[index],width: w * 0.08,),
+                            title: textWidget(msg: SearchNames[index], txtColor: kDarkBlue3, txtFontWeight: FontWeight.w700, txtFontSize: h * 0.02),
+                            subtitle: textWidget(msg: SearchPassion[index], txtColor: kDarkBlue3, txtFontWeight: FontWeight.w400, txtFontSize: h * 0.016),
+                          ),
                         ),
                       );
                   },
@@ -146,7 +160,7 @@ class _searchPageState extends State<searchPage> {
                       child: Column(
                         children: [
                           Container(
-                              height: h * 0.28,
+                              height: h * 0.18,
                               width: w * 0.9,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
@@ -165,207 +179,122 @@ class _searchPageState extends State<searchPage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Container(
-                                        height: h * 0.11,
-                                        width: h * 0.11,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            color: kHomeBG,
-                                            borderRadius: BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: kBlack,
-                                                  offset: Offset(2, 4),
-                                                  spreadRadius: -17,
-                                                  blurRadius: 20)
-                                            ]),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'images/doctor1.png',
-                                              width: w * 0.1,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: textWidget(
-                                                  msg: "Doctors",
-                                                  txtColor: kBlack,
-                                                  txtFontWeight: FontWeight.w600,
-                                                  txtFontSize: h * 0.02),
-                                            ),
-                                          ],
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.push(context, FadeRoute1(drawerScreen(3)));
+                                        },
+                                        child: Container(
+                                          height: h * 0.11,
+                                          width: h * 0.11,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                              color: kHomeBG,
+                                              borderRadius: BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: kBlack,
+                                                    offset: Offset(2, 4),
+                                                    spreadRadius: -17,
+                                                    blurRadius: 20)
+                                              ]),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'images/doctor1.png',
+                                                width: w * 0.1,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.all(5),
+                                                child: textWidget(
+                                                    msg: "Doctors",
+                                                    txtColor: kBlack,
+                                                    txtFontWeight: FontWeight.w600,
+                                                    txtFontSize: h * 0.02),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      Container(
-                                        height: h * 0.11,
-                                        width: h * 0.11,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffc4edc5),
-                                            borderRadius: BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: kBlack,
-                                                  offset: Offset(2, 4),
-                                                  spreadRadius: -17,
-                                                  blurRadius: 20)
-                                            ]),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'images/pills.png',
-                                              width: w * 0.1,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: textWidget(
-                                                  msg: "Medicines",
-                                                  txtColor: kBlack,
-                                                  txtFontWeight: FontWeight.w600,
-                                                  txtFontSize: h * 0.018),
-                                            ),
-                                          ],
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.push(context, FadeRoute1(drawerScreen(1)));
+                                        },
+                                        child: Container(
+                                          height: h * 0.11,
+                                          width: h * 0.11,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                              color: Color(0xffece3bf),
+                                              borderRadius: BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: kBlack,
+                                                    offset: Offset(2, 4),
+                                                    spreadRadius: -17,
+                                                    blurRadius: 20)
+                                              ]),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'images/appointment.png',
+                                                width: w * 0.1,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.all(5),
+                                                child: textWidget(
+                                                    msg: "Appointment",
+                                                    txtColor: kBlack,
+                                                    txtFontWeight: FontWeight.w600,
+                                                    txtFontSize: h * 0.015),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      Container(
-                                        height: h * 0.11,
-                                        width: h * 0.11,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffece3bf),
-                                            borderRadius: BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: kBlack,
-                                                  offset: Offset(2, 4),
-                                                  spreadRadius: -17,
-                                                  blurRadius: 20)
-                                            ]),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'images/appointment.png',
-                                              width: w * 0.1,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: textWidget(
-                                                  msg: "Appointment",
-                                                  txtColor: kBlack,
-                                                  txtFontWeight: FontWeight.w600,
-                                                  txtFontSize: h * 0.015),
-                                            ),
-                                          ],
+
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.push(context, FadeRoute1(drawerScreen(4)));
+                                        },
+                                        child: Container(
+                                          height: h * 0.11,
+                                          width: h * 0.11,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                              color: Color(0xffbfecdf),
+                                              borderRadius: BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: kBlack,
+                                                    offset: Offset(2, 4),
+                                                    spreadRadius: -17,
+                                                    blurRadius: 20)
+                                              ]),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'images/support.png',
+                                                width: w * 0.1,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.all(5),
+                                                child: textWidget(
+                                                    msg: "Help Desk",
+                                                    txtColor: kBlack,
+                                                    txtFontWeight: FontWeight.w600,
+                                                    txtFontSize: h * 0.017),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
                                   ),
                                   SizedBox(
                                     height: h * 0.015,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Container(
-                                        height: h * 0.11,
-                                        width: h * 0.11,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffece3bf),
-                                            borderRadius: BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: kBlack,
-                                                  offset: Offset(2, 4),
-                                                  spreadRadius: -17,
-                                                  blurRadius: 20)
-                                            ]),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'images/heartdisease.png',
-                                              width: w * 0.1,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: textWidget(
-                                                  msg: "Disease",
-                                                  txtColor: kBlack,
-                                                  txtFontWeight: FontWeight.w600,
-                                                  txtFontSize: h * 0.02),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: h * 0.11,
-                                        width: h * 0.11,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffedc4c4),
-                                            borderRadius: BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: kBlack,
-                                                  offset: Offset(2, 4),
-                                                  spreadRadius: -17,
-                                                  blurRadius: 20)
-                                            ]),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'images/hospital.png',
-                                              width: w * 0.1,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: textWidget(
-                                                  msg: "Hospitals",
-                                                  txtColor: kBlack,
-                                                  txtFontWeight: FontWeight.w600,
-                                                  txtFontSize: h * 0.02),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: h * 0.11,
-                                        width: h * 0.11,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffbfecdf),
-                                            borderRadius: BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: kBlack,
-                                                  offset: Offset(2, 4),
-                                                  spreadRadius: -17,
-                                                  blurRadius: 20)
-                                            ]),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'images/support.png',
-                                              width: w * 0.1,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: textWidget(
-                                                  msg: "Help Desk",
-                                                  txtColor: kBlack,
-                                                  txtFontWeight: FontWeight.w600,
-                                                  txtFontSize: h * 0.017),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
                                   ),
 
                                 ],
@@ -379,17 +308,24 @@ class _searchPageState extends State<searchPage> {
                               physics: BouncingScrollPhysics(),
                               itemCount: DoctorName.length,
                               itemBuilder: (context, index) {
-                                return Card(
-                                  color: kWhite,
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  margin: EdgeInsets.only(left: 20,top: 10,right: 20),
-                                  child: ListTile(
-                                    leading: Image.asset(DoctorPics[index],width: w * 0.08,),
-                                    title: textWidget(msg: DoctorName[index], txtColor: kDarkBlue3, txtFontWeight: FontWeight.w700, txtFontSize: h * 0.02),
-                                    subtitle: textWidget(msg: DoctorSpeciality[index], txtColor: kDarkBlue3, txtFontWeight: FontWeight.w400, txtFontSize: h * 0.016),
+                                return InkWell(
+                                  onTap: () {
+                                    showDialog(context: context, builder: (context) {
+                                      return FrostedGlass(widget: InfoCard(index));
+                                    },);
+                                  },
+                                  child: Card(
+                                    color: kWhite,
+                                    elevation: 5,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    margin: EdgeInsets.only(left: 20,top: 10,right: 20),
+                                    child: ListTile(
+                                      leading: Image.asset(DoctorPics[index],width: w * 0.08,),
+                                      title: textWidget(msg: DoctorName[index], txtColor: kDarkBlue3, txtFontWeight: FontWeight.w700, txtFontSize: h * 0.02),
+                                      subtitle: textWidget(msg: DoctorSpeciality[index], txtColor: kDarkBlue3, txtFontWeight: FontWeight.w400, txtFontSize: h * 0.016),
+                                    ),
                                   ),
                                 );
                               },

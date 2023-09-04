@@ -1,26 +1,33 @@
 
+
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:realestate/data/Lists.dart';
-import 'package:realestate/data/globals.dart';
-import 'package:realestate/widgets/appointmentForm.dart';
-import 'package:realestate/widgets/frostedGlass.dart';
-import 'package:realestate/widgets/text.dart';
-import 'package:http/http.dart' as http;
 
+import '../data/Lists.dart';
 import '../data/Model.dart';
 import '../data/calanderData.dart';
+import '../data/globals.dart';
+import 'package:http/http.dart' as http;
+import '../widgets/appointmentForm.dart';
+import '../widgets/frostedGlass.dart';
+import '../widgets/text.dart';
 
-class appointment extends StatefulWidget {
-  const appointment({super.key});
+class DocAppointment extends StatefulWidget {
+
+  String doctorsList;
+  String doctorsList1;
+
+  DocAppointment(this.doctorsList, this.doctorsList1);
+
 
   @override
-  State<appointment> createState() => _appointmentState();
+  State<DocAppointment> createState() => _DocAppointmentState();
 }
 
-class _appointmentState extends State<appointment> {
+class _DocAppointmentState extends State<DocAppointment> {
   var h, w;
 
   TextEditingController disease = TextEditingController();
@@ -93,17 +100,51 @@ class _appointmentState extends State<appointment> {
     DateTime today = DateTime.now();
     DateTime nextMonth = DateTime(today.year, today.month + 1, 1);
     DateTime lastDayNextMonth =
-        DateTime(nextMonth.year, nextMonth.month + 1, 0);
+    DateTime(nextMonth.year, nextMonth.month + 1, 0);
 
     List<String> dateList = generateDateList(today, lastDayNextMonth);
     List<String> weekdayNames = getWeekdayNames();
 
     return SafeArea(
+
       child: Scaffold(
           backgroundColor: kHomeBG,
+
+
+          appBar: PreferredSize(
+            child: Container(
+              child: ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    width: w,
+                    height: h * 0.1,
+                    decoration: BoxDecoration(color: kDarkBlue3, boxShadow: [
+                      BoxShadow(color: kBlack, blurRadius: 20, spreadRadius: -17)
+                    ]),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 0),
+                          child: textWidget(
+                              msg: "Doctor Appointment",
+                              txtColor: kWhite,
+                              txtFontWeight: FontWeight.w600,
+                              txtFontSize: h * 0.025),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            preferredSize: Size(w, h * 0.065),
+          ),
+
           body: status
               ? Container(
-            height: h * 0.777,
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: Column(
@@ -187,7 +228,7 @@ class _appointmentState extends State<appointment> {
                                   padding: EdgeInsets.all(5),
                                   child: textWidget(
                                       msg:
-                                          "${weekdayNames[DateTime.parse(dateList[index]).weekday - 1].substring(0, 3)}",
+                                      "${weekdayNames[DateTime.parse(dateList[index]).weekday - 1].substring(0, 3)}",
                                       txtColor: kBlack,
                                       txtFontWeight: FontWeight.w700,
                                       txtFontSize: h * 0.02),
@@ -253,14 +294,14 @@ class _appointmentState extends State<appointment> {
                                 border: SelectTimeIndex == index
                                     ? Border.all(color: kDarkBlue3, width: 2)
                                     : null
-                                // boxShadow: [
-                                //   BoxShadow(
-                                //       color: kBlack,
-                                //       offset: Offset(2, 4),
-                                //       blurRadius: 20,
-                                //       spreadRadius: -17)
-                                // ],
-                                ),
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //       color: kBlack,
+                              //       offset: Offset(2, 4),
+                              //       blurRadius: 20,
+                              //       spreadRadius: -17)
+                              // ],
+                            ),
                             child: Padding(
                               padding: EdgeInsets.all(5),
                               child: textWidget(
@@ -298,85 +339,61 @@ class _appointmentState extends State<appointment> {
                   Container(
                     height: h * 0.16,
                     width: w,
-                    child: ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: DoctorName.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () {
-
-                            if(selectDoctor.isEmpty){
-                              SelectDoctorIndex = index;
-                              selectDoctor.add(DoctorName[index]);
-                            }
-                            else{
-                              SelectDoctorIndex = null;
-                              selectDoctor.removeLast();
-                            }
-                            setState(() {});
-                          },
-                          child: Stack(
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    height: h * 0.09,
-                                    width: w * 0.7,
-                                    alignment: Alignment.centerRight,
-                                    margin: EdgeInsets.only(left: 15),
-                                    padding: EdgeInsets.only(right: 10),
-                                    decoration: BoxDecoration(
-                                        color: SelectDoctorIndex == index ? kDarkBlue3.withOpacity(0.2) : kWhite.withOpacity(0.5),
-                                        borderRadius: BorderRadius.circular(14),
-                                        border: SelectDoctorIndex == index
-                                            ? Border.all(
-                                                color: kDarkBlue3, width: 2)
-                                            : null
-                                        // boxShadow: [
-                                        //   BoxShadow(
-                                        //       color: kBlack,
-                                        //       offset: Offset(2, 4),
-                                        //       blurRadius: 20,
-                                        //       spreadRadius: -17)
-                                        // ],
-                                        ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.all(5),
-                                          child: textWidget(
-                                              msg: "${DoctorName[index]}",
-                                              txtColor: kBlack,
-                                              txtFontWeight: FontWeight.w700,
-                                              txtFontSize: h * 0.018),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.all(5),
-                                          child: textWidget(
-                                              msg: "${DoctorSpeciality[index]}",
-                                              txtColor: kBlack,
-                                              txtFontWeight: FontWeight.w500,
-                                              txtFontSize: h * 0.016),
-                                        ),
-                                      ],
-                                    ),
+                    child: Stack(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  height: h * 0.09,
+                                  width: w * 0.7,
+                                  alignment: Alignment.centerRight,
+                                  margin: EdgeInsets.only(left: 15),
+                                  padding: EdgeInsets.only(right: 10),
+                                  decoration: BoxDecoration(
+                                      color: kDarkBlue3.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(14),
+                                      border: Border.all(color: kDarkBlue3, width: 2)
+                                    // boxShadow: [
+                                    //   BoxShadow(
+                                    //       color: kBlack,
+                                    //       offset: Offset(2, 4),
+                                    //       blurRadius: 20,
+                                    //       spreadRadius: -17)
+                                    // ],
                                   ),
-                                ],
-                              ),
-                              Container(
-                                height: h * 0.18,
-                                width: w * 0.25,
-                                margin: EdgeInsets.only(top: 15, left: 25),
-                                child: Image.asset('${DoctorPics[index]}'),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.all(5),
+                                        child: textWidget(
+                                            msg: "${widget.doctorsList}",
+                                            txtColor: kBlack,
+                                            txtFontWeight: FontWeight.w700,
+                                            txtFontSize: h * 0.018),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(5),
+                                        child: textWidget(
+                                            msg: "${widget.doctorsList1}",
+                                            txtColor: kBlack,
+                                            txtFontWeight: FontWeight.w500,
+                                            txtFontSize: h * 0.016),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              height: h * 0.18,
+                              width: w * 0.25,
+                              margin: EdgeInsets.only(top: 15, left: 25),
+                              child: Image.asset('${DoctorPics[0]}'),
+                            )
+                          ],
+                        )
                   ),
                   SizedBox(
                     height: h * 0.025,
@@ -390,9 +407,7 @@ class _appointmentState extends State<appointment> {
                           msg: "Common Disease",
                           txtColor: kBlack,
                           txtFontWeight: FontWeight.bold,
-                          txtFontSize: h * 0.027),
-                      SizedBox(width: w * 0.02,),
-                      textWidget(msg: "[Optional]", txtColor: kDarkBlue3, txtFontWeight: FontWeight.w500, txtFontSize: h * 0.017)
+                          txtFontSize: h * 0.027)
                     ],
                   ),
                   Container(
@@ -573,25 +588,6 @@ class _appointmentState extends State<appointment> {
                           ),
                         );
                       }
-                      else if(appoDoctor.isEmpty){
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            width: w * 0.9,
-                            behavior: SnackBarBehavior.floating,
-                            content: Text(
-                              'Select Doctor',
-                              style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: kWhite,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                            backgroundColor: kError,
-                            duration: Duration(seconds: 1),
-                          ),
-                        );
-                      }
                       else{
                         String aDate = "";
                         String aTime = "";
@@ -642,7 +638,7 @@ class _appointmentState extends State<appointment> {
                       width: w,
                       alignment: Alignment.center,
                       margin:
-                          EdgeInsets.only(left: 15, right: 15, top: 20, bottom: 20),
+                      EdgeInsets.only(left: 15, right: 15, top: 20, bottom: 20),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                             colors: AppbarGrad,
@@ -660,7 +656,8 @@ class _appointmentState extends State<appointment> {
                 ],
               ),
             ),
-          ) : Center(child: CircularProgressIndicator(color: kDarkBlue3,strokeWidth: 3,),)
+          )
+              : Center(child: CircularProgressIndicator(color: kDarkBlue3,strokeWidth: 3,),)
       ),
     );
   }

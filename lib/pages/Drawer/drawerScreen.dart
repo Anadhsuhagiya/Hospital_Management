@@ -34,6 +34,8 @@ class _drawerScreenState extends State<drawerScreen> {
 
   initData() {
 
+
+
     NAME = Model.prefs!.getString('Name') ?? "";
     EMAIL = Model.prefs!.getString('Email') ?? "";
     ImagePath = Model.prefs!.getString('Image') ?? "";

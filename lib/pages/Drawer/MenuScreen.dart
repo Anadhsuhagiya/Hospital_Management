@@ -29,6 +29,7 @@ class _MenuScreenState extends State<MenuScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("IMAGE ::: : ::: ${widget.imagePath}");
   }
 
   var h, w;

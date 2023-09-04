@@ -126,7 +126,9 @@ class _profileShowState extends State<profileShow> {
         ),
 
         body: status == true
-            ? ListView.builder(
+            ? (appoData.isEmpty)
+            ? Center(child: textWidget(msg: "No Data Found", txtColor: kDarkBlue3, txtFontWeight: FontWeight.w500, txtFontSize: h * 0.02),)
+            : ListView.builder(
           itemCount: appoData.length,
           physics: BouncingScrollPhysics(),
           itemBuilder: (context, index) {

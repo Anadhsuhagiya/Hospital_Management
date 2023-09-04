@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:realestate/data/globals.dart';
 import 'package:realestate/data/pageTransitions.dart';
 import 'package:realestate/pages/Drawer/drawerScreen.dart';
+import 'package:http/http.dart' as http;
 
 import '../data/Model.dart';
 import '../data/haptic.dart';
@@ -39,14 +40,14 @@ class _ProfileState extends State<Profile> {
 
   Anadh() async {
     ID = Model.prefs!.getString('id') ?? "";
-    image = Model.prefs!.getString('Image') == "null"? "images/add_photo.png" : Model.prefs!.getString('Image') ?? "";
+    image = Model.prefs!.getString('Image')!.length == 52 ? "images/add_photo.png" : Model.prefs!.getString('Image') ?? "";
     Name.text = Model.prefs!.getString('Name') == "null"? "" : Model.prefs!.getString('Name') ?? "";
     Email.text = Model.prefs!.getString('Email') ?? "";
     Mono.text = Model.prefs!.getString('Mono') ?? "";
     Bdate.text = Model.prefs!.getString('Bdate') == "null"? "" : Model.prefs!.getString('Bdate') ?? "";
     gender = Model.prefs!.getString('Mono') ?? "";
-
-    print("Image ::: $image");
+    textLength = 10;
+    print("A Image ::: $image");
   }
 
 
@@ -137,7 +138,7 @@ class _ProfileState extends State<Profile> {
                         }
                       }
                       setState(() {});
-                      print(photo!.path);
+                      print("Path ::: ${photo!.path}");
                     },
                     child: Container(
                         height: h * 0.25,
@@ -260,7 +261,7 @@ class _ProfileState extends State<Profile> {
                   onChanged: (value) {
                     textLength = value.length;
                     setState(() {
-                      
+
                     });
                   },
                   style: GoogleFonts.montserrat(
@@ -427,7 +428,7 @@ class _ProfileState extends State<Profile> {
                   )
                 ],
               ),
-              
+
 
               SizedBox(height: h * 0.03,),
               Row(
@@ -532,109 +533,238 @@ class _ProfileState extends State<Profile> {
                           },
                         );
 
-                        String link = "https://flutteranadh.000webhostapp.com/Hospital/profile.php";
 
-                        DateTime dt = DateTime.now();
-                        String imageName = "$name${dt.year}${dt.month}${dt.day}${dt.hour}${dt.minute}${dt.second}";
+                        if(image.contains("/data/user/",0)){
+                          String link = "https://flutteranadh.000webhostapp.com/Hospital/profile.php";
 
-                        ID = Model.prefs!.getString('id') ?? "";
+                          DateTime dt = DateTime.now();
+                          String imageName = "$name${dt.year}${dt.month}${dt.day}${dt.hour}${dt.minute}${dt.second}";
 
-                        var formData = FormData.fromMap({
-                          'id': ID,
-                          'image': image,
-                          'name': name,
-                          'email': email,
-                          'mono': mono,
-                          'bdate': bdate,
-                          'gender': gender,
-                          'file': await MultipartFile.fromFile(
-                              image, filename: imageName),
-                        });
-                        var response = await Dio().post(link, data: formData);
+                          ID = Model.prefs!.getString('id') ?? "";
 
-                        Navigator.pop(context);
+                          print("Image ::: $image");
+                          print("Image Name ::: $imageName");
 
-                        if (response.statusCode == 200) {
-                          print("Response : ${response.data}");
+                          var formData = FormData.fromMap({
+                            'id': ID,
+                            'name': name,
+                            'email': email,
+                            'mono': mono,
+                            'bdate': bdate,
+                            'gender': gender,
+                            'file': await MultipartFile.fromFile(
+                                image, filename: imageName),
+                          });
 
-                          Map map = jsonDecode(response.data);
+                          print("Form Date :- $formData");
 
-                          int result = map['result'];
+                          var response = await Dio().post(link, data: formData);
+                          image = imageName;
+                          Navigator.pop(context);
 
-                          print("Result :- $result");
-                          if (result == 0) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                width: w * 0.9,
-                                behavior: SnackBarBehavior.floating,
-                                content: Text(
-                                  'System Error',
-                                  style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                          color: kWhite,
-                                          fontWeight: FontWeight.bold)),
+                          if (response.statusCode == 200) {
+                            print("Response : ${response.data}");
+
+                            Map map = jsonDecode(response.data);
+
+                            int result = map['result'];
+
+                            print("Result :- $result");
+                            if (result == 0) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  width: w * 0.9,
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(
+                                    'System Error',
+                                    style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                            color: kWhite,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  backgroundColor: kError,
+                                  duration: Duration(seconds: 1),
                                 ),
-                                backgroundColor: kError,
-                                duration: Duration(seconds: 1),
-                              ),
-                            );
-                          }
-                          else if(result == 1)
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                width: w * 0.9,
-                                behavior: SnackBarBehavior.floating,
-                                content: Text(
-                                  'User Data Updated Successfully',
-                                  style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                          color: kWhite,
-                                          fontWeight: FontWeight.bold)),
+                              );
+                            }
+                            else if(result == 1)
+                            {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  width: w * 0.9,
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(
+                                    'User Data Updated Successfully',
+                                    style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                            color: kWhite,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  backgroundColor: kGreen,
+                                  duration: Duration(seconds: 1),
                                 ),
-                                backgroundColor: kGreen,
-                                duration: Duration(seconds: 1),
-                              ),
-                            );
+                              );
 
-                            image.contains("u",0) ? image = "https://flutteranadh.000webhostapp.com/Hospital/$image" : image;
+                              String tmpImage = "";
+                              image = "https://flutteranadh.000webhostapp.com/Hospital/user/$image";
 
-                            await Model.prefs!.setInt('signIN', 2);
+                              await Model.prefs!.setInt('signIN', 2);
 
-                            await Model.prefs!.setString('id', ID!);
-                            await Model.prefs!.setString('Image', image);
-                            await Model.prefs!.setString('Name', name);
-                            await Model.prefs!.setString('Email', email);
-                            await Model.prefs!.setString('Mono', mono);
-                            await Model.prefs!.setString('Bdate', bdate);
-                            await Model.prefs!.setString('Gender', gender);
+                              await Model.prefs!.setString('id', ID!);
+                              await Model.prefs!.setString('Image', image);
+                              await Model.prefs!.setString('Name', name);
+                              await Model.prefs!.setString('Email', email);
+                              await Model.prefs!.setString('Mono', mono);
+                              await Model.prefs!.setString('Bdate', bdate);
+                              await Model.prefs!.setString('Gender', gender);
 
-                            Navigator.pushReplacement(context, FadeRoute1(drawerScreen(2)));
-                          }
-                          else if(result == 2){
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                width: w * 0.9,
-                                behavior: SnackBarBehavior.floating,
-                                content: Text(
-                                  'Error in Image Uploading',
-                                  style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                          color: kWhite,
-                                          fontWeight: FontWeight.bold)),
+                              print("ID = $ID");
+                              print("Image = $image");
+                              print("Name = $name");
+                              print("Email = $email");
+                              print("Mono = $mono");
+                              print("BDate = $bdate");
+                              print("Gender = $gender");
+
+                              Navigator.pushReplacement(context, FadeRoute1(drawerScreen(2)));
+                            }
+                            else if(result == 2){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  width: w * 0.9,
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(
+                                    'Error in Image Uploading',
+                                    style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                            color: kWhite,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  backgroundColor: kError,
+                                  duration: Duration(seconds: 1),
                                 ),
-                                backgroundColor: kError,
-                                duration: Duration(seconds: 1),
-                              ),
-                            );
+                              );
+                            }
                           }
                         }
+                        else{
+                          var link = Uri.parse("https://flutteranadh.000webhostapp.com/Hospital/profileUp.php");
+
+
+                          ID = Model.prefs!.getString('id') ?? "";
+
+                          Map<String,String> m = {
+                            'id': "$ID",
+                            'name': name,
+                            'email': email,
+                            'mono': mono,
+                            'bdate': bdate,
+                            'gender': gender,
+                          };
+
+                          var response = await http.post(link, body: m);
+
+                          image = image;
+                          Navigator.pop(context);
+
+                          if (response.statusCode == 200) {
+                            print("Response : ${response.body}");
+
+                            Map map = jsonDecode(response.body);
+
+                            int result = map['result'];
+
+                            print("Result :- $result");
+                            if (result == 0) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  width: w * 0.9,
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(
+                                    'System Error',
+                                    style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                            color: kWhite,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  backgroundColor: kError,
+                                  duration: Duration(seconds: 1),
+                                ),
+                              );
+                            }
+                            else if(result == 1)
+                            {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  width: w * 0.9,
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(
+                                    'User Data Updated Successfully',
+                                    style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                            color: kWhite,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  backgroundColor: kGreen,
+                                  duration: Duration(seconds: 1),
+                                ),
+                              );
+
+                              image = image;
+                              print("Anadh Pic ::: $image");
+
+                              await Model.prefs!.setInt('signIN', 2);
+
+                              await Model.prefs!.setString('id', ID!);
+                              await Model.prefs!.setString('Image', image);
+                              await Model.prefs!.setString('Name', name);
+                              await Model.prefs!.setString('Email', email);
+                              await Model.prefs!.setString('Mono', mono);
+                              await Model.prefs!.setString('Bdate', bdate);
+                              await Model.prefs!.setString('Gender', gender);
+
+                              print("ID = $ID");
+                              print("Image = $image");
+                              print("Name = $name");
+                              print("Email = $email");
+                              print("Mono = $mono");
+                              print("BDate = $bdate");
+                              print("Gender = $gender");
+
+                              Navigator.pushReplacement(context, FadeRoute1(drawerScreen(2)));
+                            }
+                            else if(result == 2){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  width: w * 0.9,
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(
+                                    'Error in Image Uploading',
+                                    style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                            color: kWhite,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  backgroundColor: kError,
+                                  duration: Duration(seconds: 1),
+                                ),
+                              );
+                            }
+                          }
+                        }
+
                       }
 
                     },
